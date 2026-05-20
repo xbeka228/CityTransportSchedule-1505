@@ -1,0 +1,251 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:models="clr-namespace:CityTransportSchedule.Models"
+        mc:Ignorable="d" d:DesignWidth="1180" d:DesignHeight="760"
+        x:Class="CityTransportSchedule.MainWindow"
+        Width="1180"
+        Height="760"
+        MinWidth="980"
+        MinHeight="640"
+        Title="Қалалық көлікті басқару кестесі">
+    <Window.Styles>
+        <Style Selector="TextBlock.statValue">
+            <Setter Property="FontSize" Value="28" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+        </Style>
+        <Style Selector="TextBlock.label">
+            <Setter Property="FontSize" Value="12" />
+            <Setter Property="Foreground" Value="#64748B" />
+        </Style>
+        <Style Selector="Border.panel">
+            <Setter Property="Background" Value="#FFFFFF" />
+            <Setter Property="BorderBrush" Value="#D7DEE8" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="CornerRadius" Value="8" />
+            <Setter Property="Padding" Value="16" />
+        </Style>
+        <Style Selector="Button.primary">
+            <Setter Property="Background" Value="#2563EB" />
+            <Setter Property="Foreground" Value="#FFFFFF" />
+            <Setter Property="Padding" Value="14,8" />
+        </Style>
+        <Style Selector="Button.danger">
+            <Setter Property="Background" Value="#B91C1C" />
+            <Setter Property="Foreground" Value="#FFFFFF" />
+        </Style>
+    </Window.Styles>
+
+    <Grid Background="#F4F7FB">
+        <Grid x:Name="LoginView" Background="#F4F7FB">
+            <Border Width="380"
+                    Padding="24"
+                    Background="#FFFFFF"
+                    BorderBrush="#D7DEE8"
+                    BorderThickness="1"
+                    CornerRadius="8"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center">
+                <StackPanel Spacing="12">
+                    <TextBlock Text="Персоналға кіру"
+                               FontSize="24"
+                               FontWeight="SemiBold"
+                               HorizontalAlignment="Center" />
+                    <TextBlock Text="Тек қызметкерлер үшін"
+                               Foreground="#64748B"
+                               HorizontalAlignment="Center" />
+                    <TextBlock Text="Логин" Classes="label" Margin="0,10,0,0" />
+                    <TextBox x:Name="LoginBox" PlaceholderText="admin" />
+                    <TextBlock Text="Құпиясөз" Classes="label" />
+                    <TextBox x:Name="PasswordBox" PasswordChar="*" PlaceholderText="1234" />
+                    <TextBlock x:Name="LoginErrorText"
+                               Foreground="#B91C1C"
+                               Text=""
+                               TextWrapping="Wrap" />
+                    <Button Content="Кіру"
+                            Classes="primary"
+                            HorizontalAlignment="Stretch"
+                            Click="Login_Click" />
+                </StackPanel>
+            </Border>
+        </Grid>
+
+        <Grid x:Name="AppView" RowDefinitions="Auto,*" IsVisible="False">
+            <Border Background="#0F172A" Padding="22,18">
+            <Grid ColumnDefinitions="*,Auto,Auto">
+                <TextBlock Text="Қалалық көлікті басқару кестесі"
+                           Foreground="#FFFFFF"
+                           FontSize="24"
+                           FontWeight="SemiBold"
+                           VerticalAlignment="Center" />
+                <TextBlock x:Name="StatusText"
+                           Grid.Column="1"
+                           VerticalAlignment="Center"
+                           Foreground="#C7D2FE"
+                           Margin="0,0,14,0"
+                           Text="Дайын" />
+                <Button Grid.Column="2"
+                        Content="Шығу"
+                        Background="#FFFFFF"
+                        Foreground="#1D4ED8"
+                        Padding="16,8"
+                        Click="Logout_Click" />
+            </Grid>
+            </Border>
+
+            <Grid Grid.Row="1" ColumnDefinitions="330,*" Margin="18" ColumnSpacing="18">
+            <ScrollViewer>
+                <StackPanel Spacing="14">
+                    <Border Classes="panel">
+                        <StackPanel Spacing="10">
+                            <TextBlock Text="Жаңа рейс" FontSize="18" FontWeight="SemiBold" />
+
+                            <TextBlock Text="Маршрут" Classes="label" />
+                            <ComboBox x:Name="RouteBox" HorizontalAlignment="Stretch" />
+
+                            <TextBlock Text="Көлік" Classes="label" />
+                            <ComboBox x:Name="VehicleBox" HorizontalAlignment="Stretch" />
+
+                            <TextBlock Text="Жүргізуші" Classes="label" />
+                            <ComboBox x:Name="DriverBox" HorizontalAlignment="Stretch" />
+
+                            <Grid ColumnDefinitions="*,*" ColumnSpacing="10">
+                                <StackPanel Spacing="4">
+                                    <TextBlock Text="Шығу уақыты" Classes="label" />
+                                    <TextBox x:Name="DepartureBox" PlaceholderText="15.05.2026 07:30" />
+                                </StackPanel>
+                                <StackPanel Grid.Column="1" Spacing="4">
+                                    <TextBlock Text="Келу уақыты" Classes="label" />
+                                    <TextBox x:Name="ArrivalBox" PlaceholderText="15.05.2026 08:10" />
+                                </StackPanel>
+                            </Grid>
+
+                            <TextBlock Text="Мәртебе" Classes="label" />
+                            <ComboBox x:Name="StatusBox" HorizontalAlignment="Stretch" />
+
+                            <TextBlock Text="Ескертпе" Classes="label" />
+                            <TextBox x:Name="NotesBox" MinHeight="62" AcceptsReturn="True" TextWrapping="Wrap" />
+
+                            <Button Content="Рейсті қосу" Classes="primary" Click="AddSchedule_Click" />
+                        </StackPanel>
+                    </Border>
+
+                    <TabControl>
+                        <TabItem Header="Маршрут">
+                            <StackPanel Spacing="8" Margin="0,12,0,0">
+                                <TextBox x:Name="RouteNumberBox" PlaceholderText="Нөмірі" />
+                                <TextBox x:Name="StartPointBox" PlaceholderText="Бастапқы аялдама" />
+                                <TextBox x:Name="EndPointBox" PlaceholderText="Соңғы аялдама" />
+                                <TextBlock Text="Маршрут интервалы, минут" Classes="label" />
+                                <NumericUpDown x:Name="IntervalBox" Minimum="1" Maximum="120" Value="12" />
+                                <Button Content="Қосу" Click="AddRoute_Click" />
+                            </StackPanel>
+                        </TabItem>
+                        <TabItem Header="Көлік">
+                            <StackPanel Spacing="8" Margin="0,12,0,0">
+                                <TextBox x:Name="BoardNumberBox" PlaceholderText="Борт нөмірі" />
+                                <TextBox x:Name="PlateNumberBox" PlaceholderText="Мемлекеттік нөмір" />
+                                <TextBox x:Name="VehicleTypeBox" PlaceholderText="Түрі" />
+                                <NumericUpDown x:Name="CapacityBox" Minimum="1" Maximum="200" Value="70" />
+                                <ComboBox x:Name="VehicleStatusBox" />
+                                <Button Content="Қосу" Click="AddVehicle_Click" />
+                            </StackPanel>
+                        </TabItem>
+                        <TabItem Header="Жүргізуші">
+                            <StackPanel Spacing="8" Margin="0,12,0,0">
+                                <TextBox x:Name="DriverNameBox" PlaceholderText="Аты-жөні" />
+                                <TextBox x:Name="DriverPhoneBox" PlaceholderText="Телефон" />
+                                <TextBox x:Name="LicenseBox" PlaceholderText="Санат" Text="D" />
+                                <ComboBox x:Name="ShiftBox" />
+                                <Button Content="Қосу" Click="AddDriver_Click" />
+                            </StackPanel>
+                        </TabItem>
+                    </TabControl>
+                </StackPanel>
+            </ScrollViewer>
+
+            <Grid Grid.Column="1" RowDefinitions="Auto,Auto,*" RowSpacing="14">
+                <Grid ColumnDefinitions="*,*,*,*" ColumnSpacing="12">
+                    <Border Classes="panel">
+                        <StackPanel>
+                            <TextBlock Text="Маршрут" Classes="label" />
+                            <TextBlock x:Name="RouteCountText" Classes="statValue" Text="0" />
+                        </StackPanel>
+                    </Border>
+                    <Border Grid.Column="1" Classes="panel">
+                        <StackPanel>
+                            <TextBlock Text="Көлік" Classes="label" />
+                            <TextBlock x:Name="VehicleCountText" Classes="statValue" Text="0" />
+                        </StackPanel>
+                    </Border>
+                    <Border Grid.Column="2" Classes="panel">
+                        <StackPanel>
+                            <TextBlock Text="Жүргізуші" Classes="label" />
+                            <TextBlock x:Name="DriverCountText" Classes="statValue" Text="0" />
+                        </StackPanel>
+                    </Border>
+                    <Border Grid.Column="3" Classes="panel">
+                        <StackPanel>
+                            <TextBlock Text="Рейс" Classes="label" />
+                            <TextBlock x:Name="ScheduleCountText" Classes="statValue" Text="0" />
+                        </StackPanel>
+                    </Border>
+                </Grid>
+
+                <Border Grid.Row="1" Classes="panel">
+                    <Grid ColumnDefinitions="*,210,180,Auto" ColumnSpacing="10">
+                        <TextBlock Text="Рейс кестесі" FontSize="18" FontWeight="SemiBold" VerticalAlignment="Center" />
+                        <ComboBox x:Name="RouteFilterBox" Grid.Column="1" SelectionChanged="Filter_Changed" />
+                        <ComboBox x:Name="StatusFilterBox" Grid.Column="2" SelectionChanged="Filter_Changed" />
+                        <Button Grid.Column="3" Content="Жаңарту" Click="Refresh_Click" />
+                    </Grid>
+                </Border>
+
+                <Border Grid.Row="2" Classes="panel" Padding="0">
+                    <ScrollViewer>
+                        <ItemsControl x:Name="ScheduleList">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate DataType="{x:Type models:ScheduleEntry}">
+                                    <Border BorderBrush="#E2E8F0"
+                                            BorderThickness="0,0,0,1"
+                                            Padding="16,14">
+                                        <Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto,Auto,Auto" ColumnSpacing="16">
+                                            <StackPanel Orientation="Horizontal" Spacing="10">
+                                                <TextBlock Text="{Binding Title}" FontSize="17" FontWeight="SemiBold" />
+                                                <Border Background="#DBEAFE" CornerRadius="4" Padding="8,2">
+                                                    <TextBlock Text="{Binding Status}" Foreground="#1D4ED8" FontSize="12" />
+                                                </Border>
+                                            </StackPanel>
+                                            <TextBlock Grid.Column="1" Text="{Binding TimeRange}" FontWeight="SemiBold" Foreground="#0F172A" />
+
+                                            <TextBlock Grid.Row="1" Text="{Binding Direction}" Foreground="#334155" Margin="0,7,0,0" />
+                                            <TextBlock Grid.Row="2" Foreground="#64748B" Margin="0,7,0,0">
+                                                <Run Text="Көлік: " />
+                                                <Run Text="{Binding VehicleName}" />
+                                                <Run Text="  |  Жүргізуші: " />
+                                                <Run Text="{Binding DriverName}" />
+                                                <Run Text="  |  " />
+                                                <Run Text="{Binding Notes}" />
+                                            </TextBlock>
+
+                                            <Button Grid.Column="1"
+                                                    Grid.Row="1"
+                                                    Grid.RowSpan="2"
+                                                    Classes="danger"
+                                                    Content="Өшіру"
+                                                    Tag="{Binding Id}"
+                                                    Click="DeleteSchedule_Click"
+                                                    VerticalAlignment="Center" />
+                                        </Grid>
+                                    </Border>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </ScrollViewer>
+                </Border>
+            </Grid>
+            </Grid>
+        </Grid>
+    </Grid>
+</Window>
